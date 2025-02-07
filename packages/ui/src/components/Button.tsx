@@ -1,16 +1,23 @@
 "use client";
 
-import { ReactNode } from "react";
+import React from "react";
+
+export type Variant = "primary" | "secondary";
 
 export type ButtonProps = {
-  children: ReactNode;
+  variant?: Variant;
   className?: string;
-  appName: string;
+  children: React.ReactNode;
 };
 
-export const Button = ({ children, className, appName }: ButtonProps) => {
+const styles: { [key in Variant]: string } = {
+  primary: "bg-ci-green text-white border-transparent",
+  secondary: "bg-white text-ci-green border-ci-green",
+};
+
+export const Button = ({ className, children, variant = "primary" }: ButtonProps) => {
   return (
-    <button className={className} onClick={() => alert(`Hello from your ${appName} app!`)}>
+    <button className={`${className} px-2 py-1 rounded-lg border ${styles[variant]}`}>
       {children}
     </button>
   );
