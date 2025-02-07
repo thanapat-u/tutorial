@@ -1,9 +1,9 @@
-import { Button } from "@repo/ui";
+import RegistrationForm from "./components/RegistrationForm";
 
 export default function Home() {
   return (
-    <div className="bg-ci-red">
-      <Button variant="primary">asdf</Button>
+    <div className="flex flex-col items-center">
+      <RegistrationForm />
     </div>
   );
 }
