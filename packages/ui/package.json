@@ -16,6 +16,7 @@
     "@chromatic-com/storybook": "^3.2.4",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/tailwind-config": "workspace:*",
     "@storybook/addon-essentials": "^8.5.3",
     "@storybook/addon-interactions": "^8.5.3",
     "@storybook/addon-onboarding": "^8.5.3",

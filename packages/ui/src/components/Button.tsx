@@ -17,7 +17,7 @@ const styles: { [key in Variant]: string } = {
 
 export const Button = ({ className, children, variant = "primary" }: ButtonProps) => {
   return (
-    <button className={`${className} px-2 py-1 rounded-lg border ${styles[variant]}`}>
+    <button className={`${className ?? ""} px-2 py-1 rounded-lg border ${styles[variant]}`}>
       {children}
     </button>
   );
