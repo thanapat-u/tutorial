@@ -2,8 +2,8 @@ import { Button } from "@repo/ui/Button";
 
 export default function Home() {
   return (
-    <div>
-      <Button variant="primary">asdf</Button>
+    <div className="flex justify-center items-center h-screen">
+      <Button>asdf</Button>
     </div>
   );
 }
