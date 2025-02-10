@@ -8,6 +8,7 @@ export type ButtonProps = {
   variant?: Variant;
   className?: string;
   children: React.ReactNode;
+  disabled?: boolean;
 };
 
 const styles: { [key in Variant]: string } = {
@@ -15,9 +16,17 @@ const styles: { [key in Variant]: string } = {
   secondary: "bg-white text-ci-green border-ci-green",
 };
 
-export const Button = ({ className, children, variant = "primary" }: ButtonProps) => {
+export const Button = ({
+  className,
+  children,
+  variant = "primary",
+  disabled = false,
+}: ButtonProps) => {
   return (
-    <button className={`${className ?? ""} px-2 py-1 rounded-lg border ${styles[variant]}`}>
+    <button
+      className={`${className ?? ""} px-2 py-1 rounded-lg border ${styles[variant]} ${disabled ? "bg-opacity-50" : ""}`}
+      disabled={disabled}
+    >
       {children}
     </button>
   );
