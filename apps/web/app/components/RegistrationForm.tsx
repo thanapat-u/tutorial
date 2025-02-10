@@ -15,15 +15,42 @@ const schema = z
     last_name: z.string().min(1, { message: "Lastname is required" }),
     citizen_id: z
       .string()
-      .regex(new RegExp(/\d+/), { message: "id must only contain numeric characters" })
-      .length(13, { message: "id must be 13 characters long" }),
+      .regex(new RegExp(/^\d{13}$/), { message: "citizen id can only be 13 digits long" }),
     is_thai: z.boolean(),
-    banking_name: z.string().min(1, { message: "Bank name is required" }),
-    banking_number: z
-      .string()
-      .regex(new RegExp(/\d+/), { message: "id must only contain numeric characters" }),
+    banking_name: z.string().optional(),
+    banking_number: z.string().optional(),
   })
-  .required();
+  .superRefine((val, ctx) => {
+    if (!val.is_thai) return;
+
+    if (val.banking_name === undefined || val.banking_name.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.too_small,
+        type: "string",
+        inclusive: true,
+        message: "Bank name is requied",
+        minimum: 1,
+        path: ["banking_name"],
+      });
+    }
+
+    if (val.banking_number === undefined || val.banking_number.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.too_small,
+        type: "string",
+        inclusive: true,
+        message: "Bank number is requied",
+        minimum: 1,
+        path: ["banking_number"],
+      });
+    } else if (!new RegExp(/^\d{10}$/).test(val.banking_number)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bank number can only be 10 digits long",
+        path: ["banking_number"],
+      });
+    }
+  });
 
 type InputType = z.infer<typeof schema>;
 
@@ -39,7 +66,7 @@ export default function RegistrationForm() {
   const [showSection, setShowSection] = useState<boolean>(false);
 
   const submitHandler: SubmitHandler<InputType> = (data) => {
-    console.log(data);
+    console.log("submitting", data);
   };
 
   return (
@@ -68,9 +95,10 @@ export default function RegistrationForm() {
           error={errors.citizen_id?.message}
         />
         <Checkbox
-          {...register("is_thai")}
-          label="is Thai"
-          onChange={(e) => setShowSection(e.target.checked)}
+          label="is Thai citizen"
+          {...register("is_thai", {
+            onChange: (e) => setShowSection(e.target.checked),
+          })}
         />
       </Section>
       {showSection && (
