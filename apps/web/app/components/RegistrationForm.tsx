@@ -5,27 +5,37 @@ import { Button } from "@repo/ui/components/Button";
 import { Checkbox } from "@repo/ui/components/Checkbox";
 import { Section } from "@repo/ui/components/Section";
 import { Textfield } from "@repo/ui/components/Textfield";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import { registrationSchema } from "../libs/schema/registration";
-
-type InputType = z.infer<typeof registrationSchema>;
+import { registrationSchema, RegistrationType } from "../libs/schema/registration";
+import { useMutation } from "@tanstack/react-query";
+import { submitRegistration } from "../libs/services/submitRegistration";
 
 export default function RegistrationForm() {
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<InputType>({
+  } = useForm<RegistrationType>({
     resolver: zodResolver(registrationSchema),
   });
 
   const [showSection, setShowSection] = useState<boolean>(false);
 
-  const submitHandler: SubmitHandler<InputType> = (data) => {
-    console.log("submitting", data);
+  const submitRegistrationMutation = useMutation({
+    mutationKey: ["submitRegistration"],
+    mutationFn: submitRegistration,
+  });
+
+  const submitHandler: SubmitHandler<RegistrationType> = (data) => {
+    submitRegistrationMutation.mutate(data);
   };
+
+  useEffect(() => {
+    if (submitRegistrationMutation.isError) {
+      console.error(submitRegistrationMutation.error);
+    }
+  }, [submitRegistrationMutation.isError, submitRegistrationMutation.error]);
 
   return (
     <form
@@ -75,7 +85,14 @@ export default function RegistrationForm() {
           />
         </Section>
       )}
-      <Button variant="primary">Register</Button>
+      {submitRegistrationMutation.isError && (
+        <div className="rounded-lg border-2 border-red-300 bg-red-100 p-2 w-full text-red-500 text-sm">
+          {submitRegistrationMutation.error.message}
+        </div>
+      )}
+      <Button variant="primary" disabled={submitRegistrationMutation.isPending}>
+        Register
+      </Button>
     </form>
   );
 }

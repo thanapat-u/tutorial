@@ -42,3 +42,5 @@ export const registrationSchema = z
       });
     }
   });
+
+export type RegistrationType = z.infer<typeof registrationSchema>;
