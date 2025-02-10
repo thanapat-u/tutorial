@@ -90,6 +90,11 @@ export default function RegistrationForm() {
           {submitRegistrationMutation.error.message}
         </div>
       )}
+      {submitRegistrationMutation.isSuccess && (
+        <div className="rounded-lg p-2 w-full border-2 border-ci-green text-ci-green text-sm">
+          Registration successful
+        </div>
+      )}
       <Button variant="primary" disabled={submitRegistrationMutation.isPending}>
         Register
       </Button>

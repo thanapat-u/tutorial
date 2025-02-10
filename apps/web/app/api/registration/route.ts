@@ -18,18 +18,17 @@ export async function POST(req: Request) {
     );
   }
 
-  const fullname = result.data.first_name + " " + result.data.last_name;
-  if (store[fullname] !== undefined) {
+  if (store[result.data.citizen_id] !== undefined) {
     return Response.json(
       {
         success: false,
-        message: "user already exists",
+        message: "citizen id already exist",
       },
       { status: 400 }
     );
   }
 
-  store[fullname] = true;
+  store[result.data.citizen_id] = true;
 
   return Response.json(
     {
